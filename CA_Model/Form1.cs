@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -213,6 +213,8 @@ namespace CATest
             first = true;
             pictureBox1.Image = TestBitmap;
             label4.Text = "";
+            borderCount = 0;
+            borderLabel.Text = "";
 
 
         }
@@ -1218,7 +1220,7 @@ namespace CATest
                         }
                     }
                     setBitmapFromCanvas();
-                    float result = (float)borderCount / (float)(width * height);
+                    float result = (float)borderCount * 100 / (float)(width * height);
                     borderLabel.Text = String.Format("{0:0.00}", result) + "%";
                     break;
             }
@@ -1528,7 +1530,7 @@ namespace CATest
             }
             setBitmapFromCanvas();
 
-            float result = (float)borderCount / (float)(width * height);
+            float result = (float)borderCount * 100 / (float)(width * height);
             borderLabel.Text = String.Format("{0:0.00}", result) + "%";
         }
 
