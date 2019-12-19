@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,8 @@ namespace CATest
         private bool isBorder;
         public bool isSelected;
         private int ID;
+        public bool isSet = false;
+        public float energy = 2.0f;
 
         public CAPixel(int x, int y)
         {
@@ -23,6 +25,7 @@ namespace CATest
             this.isBorder = false;
             this.ID = 0;
             isSelected = false;
+
         }
         public CAPixel(int x, int y, System.Drawing.Color color, bool isBorder)
         {
@@ -47,6 +50,14 @@ namespace CATest
                 string buffer = c.R.ToString() + c.G.ToString() + c.B.ToString();
                 this.ID = Int32.Parse(buffer);
             }
+            this.color = c;
+            this.isBorder = border;
+        }
+
+        public void setMCGrain(System.Drawing.Color c, bool border)
+        {
+            string buffer = c.R.ToString() + c.G.ToString() + c.B.ToString();
+            this.ID = Int32.Parse(buffer);
             this.color = c;
             this.isBorder = border;
         }
