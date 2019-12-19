@@ -23,20 +23,24 @@ namespace CATest
         bool first = true;
         bool regrow = false;
         bool wasChanged = true;
+        bool showEnergy = false;
         int borderCount = 0;
-        //bool regrowContinue = false;
+        int index = 0;
+        Dictionary<Color, int> colorDictionary2 = new Dictionary<Color, int>();
         private readonly Color selectionColor = Color.FromArgb(255, 0, 0);
+        List<Color> colorList = new List<Color>();
+        List<Point> points = new List<Point>();
 
         Random rnd2 = new Random();
 
         Bitmap TestBitmap = new Bitmap(width, height);
+        Bitmap EnergyBitmap = new Bitmap(width, height);
 
 
         public Form1()
         {
             InitializeComponent();
         }
-
 
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -46,21 +50,56 @@ namespace CATest
             {
                 if (first)
                 {
-                    for (int i = 0; i < width; i++)
+                    if (methodBox.Text != "Monte Carlo")
                     {
-                        for (int j = 0; j < height; j++)
+                        for (int i = 0; i < width; i++)
                         {
-                            canvas[i, j] = new CAPixel(i, j);
-                            buff_canvas[i, j] = new CAPixel(i, j);
-                            TestBitmap.SetPixel(i, j, canvas[i, j].GetColor());
+                            for (int j = 0; j < height; j++)
+                            {
+                                canvas[i, j] = new CAPixel(i, j);
+                                buff_canvas[i, j] = new CAPixel(i, j);
+                                TestBitmap.SetPixel(i, j, canvas[i, j].GetColor());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        colorList.Clear();
+                        for (int i = 0; i < width; i++)
+                        {
+                            for (int j = 0; j < height; j++)
+                            {
+                                canvas[i, j] = new CAPixel(i, j);
+                                buff_canvas[i, j] = new CAPixel(i, j);
+                                TestBitmap.SetPixel(i, j, canvas[i, j].GetColor());
+                            }
+                        }
+
+                        int r, g, b;
+                        for(int i = 0; i < int.Parse(grainBox.Text); i++)
+                        {
+                            r = rnd2.Next(50, 250);
+                            g = rnd2.Next(50, 250);
+                            b = rnd2.Next(50, 250);
+                            colorList.Add(Color.FromArgb(r, g, b));
                         }
                     }
 
                     pictureBox1.Image = TestBitmap;
                     first = false;
+                    Console.WriteLine(colorList.Count());
+
                 }
                 else
                 {
+                    int r, g, b;
+                    for (int i = 0; i < int.Parse(grainBox.Text); i++)
+                    {
+                        r = rnd2.Next(50, 250);
+                        g = rnd2.Next(50, 250);
+                        b = rnd2.Next(50, 250);
+                        colorList.Add(Color.FromArgb(r, g, b));
+                    }
                     for (int i = 0; i < width; i++)
                     {
                         for (int j = 0; j < height; j++)
@@ -90,70 +129,96 @@ namespace CATest
             result = int.TryParse(grainNo, out a);
             if (result)
             {
-                if(a > (height * width) - Convert.ToInt32(numericUpDownIncl.Value))
+                if (methodBox.Text != "Monte Carlo")
                 {
-                    label4.Text = "Too many nucleons for selected grid size";
-                    return;
-                }
-
-
-                Random rnd = new Random();
-
-                for (int i = 0; i < a; i++)
-                {
-                    int r = rnd.Next(50, 250);
-                    int g = rnd.Next(50, 250);
-                    int b = rnd.Next(50, 250);
-
-                    do
+                    if (a > (height * width) - Convert.ToInt32(numericUpDownIncl.Value))
                     {
-                        int x = rnd.Next(width);
-                        int y = rnd.Next(height);
-
-                        if(canvas[x, y].GetColor().ToArgb().Equals(Color.White.ToArgb()))
-                        {
-                            canvas[x, y].SetColor(Color.FromArgb(r, g, b));
-                            string buffer = r.ToString() + g.ToString() + b.ToString();
-                            canvas[x, y].SetID(Int32.Parse(buffer));
-                            result = false;
-                        }
-                    } while (result);
-                    result = true;
-
-                }
-
-                for (int i = 0; i < width; i++)
-                {
-                    for (int j = 0; j < height; j++)
-                    {
-                        buff_canvas[i, j].SetColor(canvas[i, j].GetColor());
-                        buff_canvas[i, j].SetID(canvas[i, j].GetID());
+                        label4.Text = "Too many nucleons for selected grid size";
+                        return;
                     }
-                }
 
-                if((int)numericUpDownIncl.Value > 0)
-                {
-                    if (!inclusionCheckbox.Checked)
+                    Random rnd = new Random();
+
+                    int r;
+                    int g;
+                    int b;
+
+                    for (int i = 0; i < a; i++)
                     {
-                        if(!(inclustionType.Text == "square" || inclustionType.Text == "circular"))
+                        r = rnd.Next(50, 251);
+                        g = rnd.Next(50, 251);
+                        b = rnd.Next(50, 251);
+
+                        do
                         {
-                            label4.Text = "No type of inclusion selected";
-                        }
-                        else
-                        {
-                            if (numericUpDownIncl.Value == 0 || numericUpDownSize.Value == 0 || numericUpDownIncl.Value > (height * width) - a)
+                            int x = rnd.Next(width);
+                            int y = rnd.Next(height);
+
+                            if (canvas[x, y].GetColor().ToArgb().Equals(Color.White.ToArgb()))
                             {
-                                label4.Text = "Too many inclusions for selected size of microstructure";
+                                canvas[x, y].SetColor(Color.FromArgb(r, g, b));
+                                string buffer = r.ToString() + g.ToString() + b.ToString();
+                                canvas[x, y].SetID(Int32.Parse(buffer));
+                                result = false;
+                            }
+                        } while (result);
+                        result = true;
+
+                    }
+
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            buff_canvas[i, j].SetColor(canvas[i, j].GetColor());
+                            buff_canvas[i, j].SetID(canvas[i, j].GetID());
+                        }
+                    }
+
+                    if ((int)numericUpDownIncl.Value > 0)
+                    {
+                        if (!inclusionCheckbox.Checked)
+                        {
+                            if (!(inclustionType.Text == "square" || inclustionType.Text == "circular"))
+                            {
+                                label4.Text = "No type of inclusion selected";
                             }
                             else
                             {
-                                Console.WriteLine("Set Inclusions");
-                                DrawInclusions(inclustionType.Text, false, (int)numericUpDownSize.Value, (int)numericUpDownIncl.Value);
+                                if (numericUpDownIncl.Value == 0 || numericUpDownSize.Value == 0 || numericUpDownIncl.Value > (height * width) - a)
+                                {
+                                    label4.Text = "Too many inclusions for selected size of microstructure";
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Set Inclusions");
+                                    DrawInclusions(inclustionType.Text, false, (int)numericUpDownSize.Value, (int)numericUpDownIncl.Value);
+                                }
                             }
                         }
                     }
                 }
-
+                else
+                {
+                    Color color;
+                    string buffer;
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            if (!canvas[i, j].isSelected)
+                            {
+                                color = colorList[rnd2.Next(colorList.Count)];
+                                buff_canvas[i, j].SetColor(color);
+                                buffer = color.R.ToString() + color.G.ToString() + color.B.ToString();
+                                buff_canvas[i, j].SetID(Int32.Parse(buffer));
+                                canvas[i, j].SetColor(color);
+                                canvas[i, j].SetID(Int32.Parse(buffer));
+                            }
+                        }
+                    }
+                    setBitmapFromCanvas();
+                }
             }
             else
             {
@@ -169,19 +234,71 @@ namespace CATest
         {
             Console.WriteLine("Start Expanding");
 
-            while (wasChanged)
+            if (methodBox.Text != "Monte Carlo")
             {
-                wasChanged = false;
-                for (int i = 0; i < width; i++)
+                while (wasChanged)
                 {
-                    for (int j = 0; j < height; j++)
+                    wasChanged = false;
+                    for (int i = 0; i < width; i++)
                     {
-                        if (canvas[i,j].GetColor().ToArgb().Equals(Color.White.ToArgb()) && canvas[i,j].GetIsBorder() == false)
+                        for (int j = 0; j < height; j++)
                         {
-                            //wasChanged = true;
-                            SetGrainState(i, j);
+                            if (canvas[i, j].GetColor().ToArgb().Equals(Color.White.ToArgb()) && canvas[i, j].GetIsBorder() == false)
+                            {
+                                SetGrainState(i, j);
+                            }
                         }
                     }
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            canvas[i, j].CopyData(buff_canvas[i, j].GetID(), buff_canvas[i, j].GetColor(), buff_canvas[i, j].GetIsBorder());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                int prevEnergy = 0;
+                int nextEnergy = 0;
+                bool isBorder = false;
+                Color changeColor;
+                List<Color> keyList;
+                for (int a = 0; a < width; a++)
+                {
+                    for (int b = 0; b < height; b++)
+                    {
+                        if (canvas[a, b].isSelected == false)
+                            points.Add(new Point(a, b));
+                    }
+                }
+                for (int k = 0; k < 80; k++)
+                {
+                    
+                    points = points.OrderBy(a => Guid.NewGuid()).ToList();
+                    foreach (Point p in points)
+                    {
+                        prevEnergy = MonteCarloMoore2(p.X, p.Y, buff_canvas[p.X, p.Y].GetColor());
+
+                        colorDictionary2.Remove(buff_canvas[p.X, p.Y].GetColor());
+                        colorDictionary2.Remove(Color.FromArgb(255, 0, 0));
+
+                        if (colorDictionary2.Count > 0)
+                        {
+                            keyList = new List<Color>(colorDictionary2.Keys);
+                            changeColor = keyList[rnd2.Next(0, keyList.Count)];
+                            nextEnergy = MonteCarloMoore2(p.X, p.Y, changeColor);
+                            if (nextEnergy < prevEnergy)
+                            {
+                                if (nextEnergy > 0)
+                                    isBorder = true;
+                                buff_canvas[p.X, p.Y].setMCGrain(changeColor, isBorder);
+                            }
+                        }
+
+                    }
+                    //points.Clear();
                 }
                 for (int i = 0; i < width; i++)
                 {
@@ -190,7 +307,9 @@ namespace CATest
                         canvas[i, j].CopyData(buff_canvas[i, j].GetID(), buff_canvas[i, j].GetColor(), buff_canvas[i, j].GetIsBorder());
                     }
                 }
+                    setBitmapFromCanvas();
             }
+            //DistributeEnergy();
         }
 
         private void SetGrainState(int x, int y)
@@ -454,6 +573,19 @@ namespace CATest
             pictureBox1.Image = TestBitmap;
         }
 
+        private void setEnergyBitmapFromCanvas()
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    buff_canvas[i, j].SetColor(canvas[i, j].GetColor());
+                    EnergyBitmap.SetPixel(i, j, canvas[i, j].GetColor());
+                }
+            }
+            pictureBox1.Image = EnergyBitmap;
+        }
+
         private void Moore4(int x, int y)
         {
             //
@@ -620,6 +752,7 @@ namespace CATest
                 colorDictionary.Remove(Color.FromArgb(255, 0, 0));
                 colorDictionary.Remove(Color.White);
                 bool border = colorDictionary.Count > 1 ? true : false;
+                //buff_canvas[x, y].energy = colorDictionary.Count > 1 ? 5.0f : 2.0f;
                 colorDictionary.Remove(Color.Black);
                 colorDictionary.Remove(Color.FromArgb(0, 0, 0));
 
@@ -678,6 +811,7 @@ namespace CATest
             colorDictionary.Remove(Color.FromArgb(255, 255, 255));
             colorDictionary.Remove(Color.FromArgb(255, 0, 0));
             bool border = colorDictionary.Count > 1 ? true : false;
+            //buff_canvas[x, y].energy = colorDictionary.Count > 1 ? 5.0f : 2.0f;
             colorDictionary.Remove(Color.Black);
 
             if (colorDictionary.Count > 0)
@@ -794,6 +928,7 @@ namespace CATest
             colorDictionary.Remove(Color.FromArgb(255, 0, 0));
             colorDictionary.Remove(Color.White);
             bool border = colorDictionary.Count > 1 ? true : false;
+            //buff_canvas[x, y].energy = colorDictionary.Count > 1 ? 5.0f : 2.0f;
             colorDictionary.Remove(Color.Black);
             colorDictionary.Remove(Color.FromArgb(0, 0, 0));
 
@@ -972,6 +1107,7 @@ namespace CATest
             colorDictionary.Remove(Color.FromArgb(255, 0, 0));
             colorDictionary.Remove(Color.White);
             bool border = colorDictionary.Count > 1 ? true : false;
+            ///buff_canvas[x, y].energy = colorDictionary.Count > 1 ? 5.0f : 2.0f;
             colorDictionary.Remove(Color.Black);
             colorDictionary.Remove(Color.FromArgb(0, 0, 0));
 
@@ -995,9 +1131,354 @@ namespace CATest
                 {
                     buff_canvas[x, y].setGrain(max, border);
                     wasChanged = true;
-                    //Console.WriteLine(max);
                 }
             }
+        }
+
+        private int MonteCarloMoore(int x, int y, Color c)
+        {
+            colorDictionary2 = new Dictionary<Color, int>();
+            int energy = 0;
+            index = 0;
+
+            if (x != 0 && x != width - 1 && y != 0 && y != height - 1)
+            {
+                if(buff_canvas[x - 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y - 1].GetColor()))
+                    {
+                        colorDictionary2.Add(buff_canvas[x - 1, y - 1].GetColor(), index);
+                        index++;
+                    }
+                    energy++;
+                }
+                if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                    {
+                        colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index);
+                        index++;
+                    }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y - 1].GetColor()))
+                    {
+                        colorDictionary2.Add(buff_canvas[x + 1, y - 1].GetColor(), index);
+                        index++;
+                    }
+                    energy++;
+                }
+                if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                    {
+                        colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index);
+                        index++;
+                    }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                    {
+                        colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index);
+                        index++;
+                    }
+                    energy++;
+                }
+                if (buff_canvas[x - 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y + 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x - 1, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y + 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x + 1, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+            }
+            else if (x == 0)
+            {
+                if (y == 0)
+                {
+                    if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb())
+                        {
+                            if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                            { colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index); index++; }
+                            energy++;
+                        }
+                    }
+                    if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x + 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+
+                }
+                else if (y == height - 1)
+                {
+                    if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x + 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                }
+                else
+                {
+                    if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x + 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x + 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x + 1, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                }
+            }
+            else if (x == width - 1)
+            {
+                if (y == 0)
+                {
+                    if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x - 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                }
+                else if (y == height - 1)
+                {
+                    if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x - 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                }
+                else
+                {
+                    if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x - 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y - 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y - 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x - 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x - 1, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                    if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                    {
+                        if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                        { colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                        energy++;
+                    }
+                }
+            }
+            else if (y == 0)
+            {
+                if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x - 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y + 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x - 1, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x, y + 1].GetColor()))
+                    {  colorDictionary2.Add(buff_canvas[x, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y + 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y + 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y + 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x + 1, y + 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index); index++; }
+                    energy++;
+                }
+            }
+            else if (y == height - 1)
+            {
+                if (buff_canvas[x - 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x - 1, y].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x - 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x - 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x - 1, y - 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x - 1, y - 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x, y - 1].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x, y - 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y - 1].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y - 1].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y - 1].GetColor()))
+                    {  colorDictionary2.Add(buff_canvas[x + 1, y - 1].GetColor(), index); index++; }
+                    energy++;
+                }
+                if (buff_canvas[x + 1, y].GetColor().ToArgb() != c.ToArgb() && buff_canvas[x + 1, y].GetColor().ToArgb() != Color.Black.ToArgb())
+                {
+                    if (!colorDictionary2.ContainsKey(buff_canvas[x + 1, y].GetColor()))
+                    { colorDictionary2.Add(buff_canvas[x + 1, y].GetColor(), index); index++; }
+                    energy++;
+                }
+            }
+            colorDictionary2.Remove(Color.FromArgb(255, 0, 0));
+            bool border = energy > 1 ? true : false;
+            colorDictionary2.Remove(Color.Black);
+            colorDictionary2.Remove(Color.FromArgb(0, 0, 0));
+
+            return energy;
+
+        }
+
+        private int MonteCarloMoore2(int x, int y, Color c)
+        {
+            colorDictionary2 = new Dictionary<Color, int>();
+            int energy = 0;
+            int currentCount;
+
+            for (int i = x - 1; i < x + 2; i++)
+            {
+                for(int j = y - 1; j < y + 2; j++)
+                {
+                    if(i >= 0 && i < width && j >= 0 && j < height)
+                    {
+                        if (buff_canvas[i, j].GetColor().ToArgb() != c.ToArgb())
+                        {
+                            if (buff_canvas[i, j].GetColor().ToArgb() != Color.Black.ToArgb())
+                            {
+                                colorDictionary2.TryGetValue(buff_canvas[i, j].GetColor(), out currentCount);
+                                colorDictionary2[canvas[i, j].GetColor()] = currentCount + 1;
+                                energy++;
+                            }
+                        }
+                        else
+                        {
+                            colorDictionary2.TryGetValue(buff_canvas[i, j].GetColor(), out currentCount);
+                            colorDictionary2[canvas[i, j].GetColor()] = currentCount + 1;
+                        }
+                    }
+                }
+            }
+            colorDictionary2.Remove(Color.FromArgb(255, 0, 0));
+            bool border = energy > 1 ? true : false;
+            //buff_canvas[x, y].energy = energy > 1 ? 5.0f : 2.0f;
+            colorDictionary2.Remove(Color.Black);
+            colorDictionary2.Remove(Color.FromArgb(0, 0, 0));
+
+            return energy;
+
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -1326,6 +1807,7 @@ namespace CATest
 
         private void button4_Click(object sender, EventArgs e)
         {
+            colorList.Clear();
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
@@ -1554,6 +2036,233 @@ namespace CATest
         private void label9_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void DistributeEnergy()
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var colorDictionary = new Dictionary<Color, int>();
+                    int currentCount = 0;
+
+                    if (x != 0 && x != width - 1 && y != 0 && y != height - 1)
+                    {
+                        colorDictionary.TryGetValue(canvas[x - 1, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y - 1].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x + 1, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y - 1].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x - 1, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y + 1].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+
+                        colorDictionary.TryGetValue(canvas[x + 1, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y + 1].GetColor()] = currentCount + 1;
+                    }
+                    else if (x == 0)
+                    {
+                        if (y == 0)
+                        {
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y + 1].GetColor()] = currentCount + 1;
+
+                        }
+                        else if (y == height - 1)
+                        {
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y - 1].GetColor()] = currentCount + 1;
+                        }
+                        else
+                        {
+
+                            colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y - 1].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+
+                            colorDictionary.TryGetValue(canvas[x + 1, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x + 1, y + 1].GetColor()] = currentCount + 1;
+                        }
+                    }
+                    else if (x == width - 1)
+                    {
+                        if (y == 0)
+                        {
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y + 1].GetColor()] = currentCount + 1;
+                            colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+
+                        }
+                        else if (y == height - 1)
+                        {
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y - 1].GetColor()] = currentCount + 1;
+                            colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+                        }
+                        else
+                        {
+                            //
+                            colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y - 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y - 1].GetColor()] = currentCount + 1;
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+                            //
+                            colorDictionary.TryGetValue(canvas[x - 1, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x - 1, y + 1].GetColor()] = currentCount + 1;
+                            colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                            colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+                        }
+                    }
+                    else if (y == 0)
+                    {
+                        //
+                        colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x - 1, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y + 1].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x, y + 1].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x + 1, y + 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y + 1].GetColor()] = currentCount + 1;
+                        colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+
+                    }
+                    else if (y == height - 1)
+                    {
+                        //
+                        colorDictionary.TryGetValue(canvas[x - 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x - 1, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x - 1, y - 1].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x, y - 1].GetColor()] = currentCount + 1;
+                        //
+                        colorDictionary.TryGetValue(canvas[x + 1, y - 1].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y - 1].GetColor()] = currentCount + 1;
+                        colorDictionary.TryGetValue(canvas[x + 1, y].GetColor(), out currentCount);
+                        colorDictionary[canvas[x + 1, y].GetColor()] = currentCount + 1;
+                    }
+                    bool border = colorDictionary.Count > 1 ? true : false;
+
+                    if (colorDictionary.Count > 1)
+                    {
+                        if (grainEnergy.Value != boundaryEnergy.Value)
+                        {
+                            EnergyBitmap.SetPixel(x, y, Color.FromArgb(0, 255, 0));
+                            buff_canvas[x, y].energy = 5.0f;
+                        }
+                        else
+                            EnergyBitmap.SetPixel(x, y, Color.FromArgb(0, 0, 255 - ((255 - buff_canvas[x, y].GetColor().B) / 10)));
+
+                    }
+                    else
+                    {
+                        EnergyBitmap.SetPixel(x, y, Color.FromArgb(0, 0, 255 - ((255 - buff_canvas[x,y].GetColor().B)/10)));
+                    }
+                }
+
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (!showEnergy)
+            {
+                DistributeEnergy();
+                pictureBox1.Image = EnergyBitmap;
+                showEnergy = true;
+            }
+            else
+            {
+                pictureBox1.Image = TestBitmap;
+                showEnergy = false;
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            int r;
+            int g;
+            int b;
+            bool result = true;
+
+            for (int i = 0; i < grainBegin.Value; i++)
+            {
+                r = rnd2.Next(50, 251);
+                g = rnd2.Next(50, 251);
+                b = rnd2.Next(50, 251);
+
+                do
+                {
+                    int x = rnd2.Next(width);
+                    int y = rnd2.Next(height);
+
+                    if (canvas[x, y].GetColor().ToArgb().Equals(Color.White.ToArgb()))
+                    {
+                        canvas[x, y].SetColor(Color.FromArgb(r, g, b));
+                        string buffer = r.ToString() + g.ToString() + b.ToString();
+                        canvas[x, y].SetID(Int32.Parse(buffer));
+                        result = false;
+                    }
+                } while (result);
+                result = true;
+
+            }
         }
     }
 }
