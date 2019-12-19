@@ -1,4 +1,4 @@
-﻿namespace CATest
+namespace CATest
 {
     partial class Form1
     {
@@ -63,6 +63,19 @@
             this.button6 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.borderLabel = new System.Windows.Forms.Label();
+            this.methodBox = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.grainCheckbox = new System.Windows.Forms.CheckBox();
+            this.grainInc = new System.Windows.Forms.NumericUpDown();
+            this.grainBegin = new System.Windows.Forms.NumericUpDown();
+            this.grainEnergy = new System.Windows.Forms.NumericUpDown();
+            this.boundaryEnergy = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
@@ -71,6 +84,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIncl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownProb)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainInc)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainBegin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainEnergy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.boundaryEnergy)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -85,7 +102,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(712, 481);
+            this.startButton.Location = new System.Drawing.Point(710, 389);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 2;
@@ -95,23 +112,23 @@
             // 
             // grainBox
             // 
-            this.grainBox.Location = new System.Drawing.Point(711, 180);
+            this.grainBox.Location = new System.Drawing.Point(711, 169);
             this.grainBox.Name = "grainBox";
-            this.grainBox.Size = new System.Drawing.Size(164, 20);
+            this.grainBox.Size = new System.Drawing.Size(120, 20);
             this.grainBox.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(708, 164);
+            this.label3.Location = new System.Drawing.Point(708, 153);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.Size = new System.Drawing.Size(100, 13);
             this.label3.TabIndex = 7;
-            this.label3.Text = "No. of grains";
+            this.label3.Text = "No. of grains/states";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(793, 481);
+            this.button1.Location = new System.Drawing.Point(791, 389);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(82, 52);
             this.button1.TabIndex = 8;
@@ -121,7 +138,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(712, 510);
+            this.button2.Location = new System.Drawing.Point(710, 418);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 9;
@@ -234,7 +251,7 @@
             this.numericUpDownX.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownX.TabIndex = 18;
             this.numericUpDownX.Value = new decimal(new int[] {
-            300,
+            150,
             0,
             0,
             0});
@@ -256,7 +273,7 @@
             this.numericUpDownY.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownY.TabIndex = 19;
             this.numericUpDownY.Value = new decimal(new int[] {
-            300,
+            150,
             0,
             0,
             0});
@@ -266,13 +283,13 @@
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(12, 40);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(694, 493);
+            this.panel1.Size = new System.Drawing.Size(693, 401);
             this.panel1.TabIndex = 20;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(711, 442);
+            this.label4.Location = new System.Drawing.Point(843, 325);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(0, 13);
             this.label4.TabIndex = 21;
@@ -280,7 +297,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(708, 299);
+            this.label5.Location = new System.Drawing.Point(708, 238);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(72, 13);
             this.label5.TabIndex = 22;
@@ -293,14 +310,14 @@
             this.inclustionType.Items.AddRange(new object[] {
             "square",
             "circular"});
-            this.inclustionType.Location = new System.Drawing.Point(711, 315);
+            this.inclustionType.Location = new System.Drawing.Point(711, 254);
             this.inclustionType.Name = "inclustionType";
             this.inclustionType.Size = new System.Drawing.Size(121, 21);
             this.inclustionType.TabIndex = 23;
             // 
             // numericUpDownIncl
             // 
-            this.numericUpDownIncl.Location = new System.Drawing.Point(712, 367);
+            this.numericUpDownIncl.Location = new System.Drawing.Point(712, 306);
             this.numericUpDownIncl.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -313,7 +330,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(708, 351);
+            this.label6.Location = new System.Drawing.Point(708, 290);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 13);
             this.label6.TabIndex = 25;
@@ -322,7 +339,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(712, 406);
+            this.label7.Location = new System.Drawing.Point(841, 290);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(106, 13);
             this.label7.TabIndex = 26;
@@ -330,14 +347,14 @@
             // 
             // numericUpDownSize
             // 
-            this.numericUpDownSize.Location = new System.Drawing.Point(715, 423);
+            this.numericUpDownSize.Location = new System.Drawing.Point(843, 306);
             this.numericUpDownSize.Name = "numericUpDownSize";
             this.numericUpDownSize.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownSize.TabIndex = 27;
             // 
             // inclusionCheckbox
             // 
-            this.inclusionCheckbox.Location = new System.Drawing.Point(864, 367);
+            this.inclusionCheckbox.Location = new System.Drawing.Point(842, 254);
             this.inclusionCheckbox.Name = "inclusionCheckbox";
             this.inclusionCheckbox.Size = new System.Drawing.Size(145, 17);
             this.inclusionCheckbox.TabIndex = 28;
@@ -347,7 +364,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(711, 248);
+            this.label8.Location = new System.Drawing.Point(708, 193);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(105, 13);
             this.label8.TabIndex = 29;
@@ -355,14 +372,14 @@
             // 
             // numericUpDownProb
             // 
-            this.numericUpDownProb.Location = new System.Drawing.Point(711, 265);
+            this.numericUpDownProb.Location = new System.Drawing.Point(711, 210);
             this.numericUpDownProb.Name = "numericUpDownProb";
             this.numericUpDownProb.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownProb.TabIndex = 30;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(882, 481);
+            this.button4.Location = new System.Drawing.Point(880, 389);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(81, 52);
             this.button4.TabIndex = 31;
@@ -372,7 +389,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(969, 481);
+            this.button5.Location = new System.Drawing.Point(967, 389);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(89, 23);
             this.button5.TabIndex = 32;
@@ -382,7 +399,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(969, 510);
+            this.button6.Location = new System.Drawing.Point(967, 418);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(89, 23);
             this.button6.TabIndex = 33;
@@ -408,11 +425,160 @@
             this.borderLabel.Size = new System.Drawing.Size(0, 13);
             this.borderLabel.TabIndex = 35;
             // 
+            // methodBox
+            // 
+            this.methodBox.FormattingEnabled = true;
+            this.methodBox.Items.AddRange(new object[] {
+            "CA",
+            "Monte Carlo"});
+            this.methodBox.Location = new System.Drawing.Point(842, 168);
+            this.methodBox.Name = "methodBox";
+            this.methodBox.Size = new System.Drawing.Size(121, 21);
+            this.methodBox.TabIndex = 36;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(839, 152);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(98, 13);
+            this.label10.TabIndex = 37;
+            this.label10.Text = "Generation Method";
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(711, 456);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(345, 37);
+            this.button7.TabIndex = 39;
+            this.button7.Text = "show energy";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(711, 527);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(345, 39);
+            this.button8.TabIndex = 40;
+            this.button8.Text = "recrystalyze";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(13, 508);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(98, 13);
+            this.label11.TabIndex = 41;
+            this.label11.Text = "Beginning grain no.";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(201, 508);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(99, 13);
+            this.label12.TabIndex = 42;
+            this.label12.Text = "Grain no. increment";
+            // 
+            // grainCheckbox
+            // 
+            this.grainCheckbox.AutoSize = true;
+            this.grainCheckbox.Location = new System.Drawing.Point(373, 520);
+            this.grainCheckbox.Name = "grainCheckbox";
+            this.grainCheckbox.Size = new System.Drawing.Size(118, 17);
+            this.grainCheckbox.TabIndex = 43;
+            this.grainCheckbox.Text = "Constant Increment";
+            this.grainCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // grainInc
+            // 
+            this.grainInc.Location = new System.Drawing.Point(204, 527);
+            this.grainInc.Name = "grainInc";
+            this.grainInc.Size = new System.Drawing.Size(120, 20);
+            this.grainInc.TabIndex = 44;
+            // 
+            // grainBegin
+            // 
+            this.grainBegin.Location = new System.Drawing.Point(16, 527);
+            this.grainBegin.Name = "grainBegin";
+            this.grainBegin.Size = new System.Drawing.Size(120, 20);
+            this.grainBegin.TabIndex = 45;
+            // 
+            // grainEnergy
+            // 
+            this.grainEnergy.DecimalPlaces = 2;
+            this.grainEnergy.Location = new System.Drawing.Point(712, 363);
+            this.grainEnergy.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.grainEnergy.Name = "grainEnergy";
+            this.grainEnergy.Size = new System.Drawing.Size(120, 20);
+            this.grainEnergy.TabIndex = 46;
+            this.grainEnergy.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // boundaryEnergy
+            // 
+            this.boundaryEnergy.DecimalPlaces = 2;
+            this.boundaryEnergy.Location = new System.Drawing.Point(846, 363);
+            this.boundaryEnergy.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.boundaryEnergy.Name = "boundaryEnergy";
+            this.boundaryEnergy.Size = new System.Drawing.Size(120, 20);
+            this.boundaryEnergy.TabIndex = 1;
+            this.boundaryEnergy.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(711, 344);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(68, 13);
+            this.label13.TabIndex = 47;
+            this.label13.Text = "Grain Energy";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(843, 344);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(88, 13);
+            this.label14.TabIndex = 48;
+            this.label14.Text = "Boundary Energy";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1096, 580);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.boundaryEnergy);
+            this.Controls.Add(this.grainEnergy);
+            this.Controls.Add(this.grainBegin);
+            this.Controls.Add(this.grainInc);
+            this.Controls.Add(this.grainCheckbox);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.methodBox);
             this.Controls.Add(this.borderLabel);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.button6);
@@ -451,6 +617,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIncl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownProb)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainInc)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainBegin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grainEnergy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.boundaryEnergy)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -492,6 +662,19 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label borderLabel;
+        private System.Windows.Forms.ComboBox methodBox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox grainCheckbox;
+        private System.Windows.Forms.NumericUpDown grainInc;
+        private System.Windows.Forms.NumericUpDown grainBegin;
+        private System.Windows.Forms.NumericUpDown grainEnergy;
+        private System.Windows.Forms.NumericUpDown boundaryEnergy;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
     }
 }
 
